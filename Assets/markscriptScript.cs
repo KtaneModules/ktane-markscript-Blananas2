@@ -16,7 +16,7 @@ public class markscriptScript : MonoBehaviour {
     public KMSelectable Power;
     public KMSelectable[] Keyboard;
     public TextMesh Screen;
-    public TextMesh Error;
+    public TextMesh OtherScreen;
     public GameObject Line;
     public GameObject StatusLight;
 
@@ -46,6 +46,8 @@ public class markscriptScript : MonoBehaviour {
     int PuzzleIndex = 0;
     int NumberOfStartLines = 0;
     string DebugLog = "";
+    int[] RetroNumbers = { 2, 2, 2, 2, 2, 2, 2 };
+    string[] RetroLines = { "", "", "", "", "", "", "" };
 
     int CurrentLine = 0;
     List<string> ProgramComments = new List<string> {};
@@ -77,6 +79,7 @@ public class markscriptScript : MonoBehaviour {
         GeneratePuzzle();
         DrawScreen(CursorIndex, ScreenScroll);
         StartCoroutine(CursorFlip());
+        OtherScreen.color = new Color(1f, 1f, 1f, 0.2f);
     }
 
     void Update () {
@@ -169,10 +172,13 @@ public class markscriptScript : MonoBehaviour {
         Line.transform.localPosition = new Vector3(0f, 0.0149f, 0.0343f);
         if (ProgramRunning) {
             NumberOfRuns = 0;
+            OtherScreen.color = new Color(1f, 1f, 1f, 0.2f);
+            OtherScreen.gameObject.SetActive(true);
             StartProgram(0.25f);
         } else {
             Debug.LogFormat("[Markscript #{0}] Events: {1}", moduleId, DebugLog);
             Debug.LogFormat("[Markscript #{0}] The program was halted by the user.", moduleId);
+            OtherScreen.gameObject.SetActive(false);
             CursorIndex = ScreenScroll+1;
             UndoStartRandomization();
             DrawScreen(CursorIndex, ScreenScroll);
@@ -186,7 +192,13 @@ public class markscriptScript : MonoBehaviour {
         VarNames.Clear();
         VarValues.Clear();
         ProgramComments.Clear();
-        Debug.LogFormat("[Markscript #{0}] Program: {1}", moduleId, Program.Join(";"));
+        for (int rtro = 0; rtro < 7; rtro++) {
+            RetroNumbers[rtro] = 2;
+            RetroLines[rtro] = "";
+        }
+        if (NumberOfRuns == 0) {
+            Debug.LogFormat("[Markscript #{0}] Program: {1}", moduleId, Program.Join(";"));
+        }
         DebugLog = "";
         RandomizeStart();
         for (int l = 0; l < Program.Count; l++) {
@@ -206,6 +218,7 @@ public class markscriptScript : MonoBehaviour {
             if (CurrentLine < Program.Count) {
                 Audio.PlaySoundAtTransform("run", transform);
                 RunLine(CurrentLine);
+                if (ProgramRunning) { RetroScroll(); }
                 if (CurrentLine < 4) {
                     ScreenScroll = 0;
                     Line.transform.localPosition = new Vector3(0f, 0.0149f, 0.0343f + (CurrentLine*-0.0132f));
@@ -222,6 +235,7 @@ public class markscriptScript : MonoBehaviour {
                 ProgramRunning = false;
                 Line.SetActive(false);
                 CursorIndex = Program.Count - 1;
+                OtherScreen.gameObject.SetActive(false);
                 DrawScreen(CursorIndex, ScreenScroll);
                 UndoStartRandomization();
             }
@@ -230,6 +244,7 @@ public class markscriptScript : MonoBehaviour {
     }
 
     void RunLine (int cur) {
+        if (!ProgramRunning) { return; }
         string line = Program[cur].Split('«')[0].Trim();
         while (line.Contains("  ")) {
             line = line.Replace("  ", " ");
@@ -392,17 +407,19 @@ public class markscriptScript : MonoBehaviour {
                                 numeric = VarValues[VarNames.IndexOf(value)];
                             }
                         }
-                        DebugLog += ("♫ " + numeric + " returned;");
+                        DebugLog += ("♫ " + numeric + " returned");
                         if (numeric == CorrectAnswer) {
                             ThatWasRight();
                         } else {
                             if (moduleSolved) {
                                 DrawError("UNAUTHORIZED DATA DETECTED, RETURNED " + numeric);
+                                return;
                             } else {
                                 DrawError("INCORRECT ♫");
+                                return;
                             }
                         }
-                        return;
+                        return; //just in case...
                 }
             }
         }
@@ -433,6 +450,7 @@ public class markscriptScript : MonoBehaviour {
                 GetComponent<KMBombModule>().HandlePass();
                 moduleSolved = true;
                 CorrectAnswer = null;
+                OtherScreen.text = "";
                 StopAllCoroutines();
                 StartCoroutine(CursorFlip());
                 Debug.LogFormat("[Markscript #{0}] That's 5 correct values in a row, module solved!", moduleId);
@@ -446,10 +464,11 @@ public class markscriptScript : MonoBehaviour {
         Debug.LogFormat("[Markscript #{0}] An error occured. Error: {1}", moduleId, err);
         TaskShown = true;
         ProgramRunning = false;
-        Error.gameObject.SetActive(true);
+        OtherScreen.color = Color.white;
+        OtherScreen.gameObject.SetActive(true);
         Screen.gameObject.SetActive(false);
         Line.SetActive(false);
-        Error.text = "<color=maroon>" + WordWrap("ERROR: " + err, 24) + "</color>";
+        OtherScreen.text = "<color=maroon>" + WordWrap("ERROR: " + err, 24) + "</color>";
         CursorIndex = ScreenScroll+1;
         UndoStartRandomization();
         DrawScreen(CursorIndex, ScreenScroll);
@@ -490,7 +509,8 @@ public class markscriptScript : MonoBehaviour {
                     break;
                     case "☺":
                         Screen.gameObject.SetActive(true);
-                        Error.gameObject.SetActive(false);
+                        OtherScreen.text = "";
+                        OtherScreen.gameObject.SetActive(false);
                         TaskShown = !TaskShown;
                     break;
                     default:
@@ -518,6 +538,30 @@ public class markscriptScript : MonoBehaviour {
             Screen.text = Style(progString.Replace("§", (CursorFlicker ? "■" : "□")));
         } else {
             Screen.text = Style(WordWrap(Task, 24));
+        }
+    }
+
+    void RetroScroll () {
+        for (int p = 0; p < Math.Min(VarNames.Count, 7); p++) {
+            RetroNumbers[p] = (RetroNumbers[p] + 23)%24;
+            RetroLines[p] = RetroStuff(p, RetroNumbers[p]);
+        }
+        OtherScreen.text = RetroLines.Join("\n").Replace("-", "♣");
+    }
+
+    string RetroStuff (int v, int o) {
+        string va = VarNames[v] + "≈" + VarValues[v];
+        string st = "".PadLeft(o);
+        va = st + va;
+        int ijic = 0;
+        string sjic = "";
+        if (va.Length < 24) {
+            return va;
+        } else {
+            ijic = va.Length - 24;
+            sjic = va.Substring(va.Length - ijic);
+            va = sjic + va.Substring(ijic, 24 - sjic.Length);
+            return va;
         }
     }
 

@@ -17,6 +17,9 @@ MonoBehaviour:
   description: 'Turing complete on the inside, wacky stripes on the outside.
 
 
+    Created for the 4th KTANE Modding Jam.
+
+
     Module by Blananas2
 
     Fonts from VileR at https://int10h.org/oldschool-pc-fonts/
@@ -27,4 +30,4 @@ MonoBehaviour:
     The manual can be found here: https://ktane.timwi.de/HTML/Markscript.html'
   version: 
   outputFolder: build
-  previewImage: {fileID: 0}
+  previewImage: {fileID: 2800000, guid: 4398cd3bf4b9f18469d6dd8e2b635082, type: 3}

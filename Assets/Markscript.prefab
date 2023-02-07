@@ -657,7 +657,7 @@ GameObject:
   - component: {fileID: 102620878141707974}
   - component: {fileID: 114944155262469514}
   m_Layer: 0
-  m_Name: Error
+  m_Name: Other Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13041,7 +13041,7 @@ TextMesh:
   m_Font: {fileID: 12800000, guid: b31394754c38e7849b68312ca1c91191, type: 3}
   m_Color:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 1694498815
 --- !u!102 &102639606666077868
 TextMesh:
   serializedVersion: 3
@@ -15633,7 +15633,7 @@ MonoBehaviour:
   - {fileID: 114195598296239912}
   - {fileID: 114398099358024774}
   Screen: {fileID: 102147758355087652}
-  Error: {fileID: 102620878141707974}
+  OtherScreen: {fileID: 102620878141707974}
   Line: {fileID: 1736221744296256}
   StatusLight: {fileID: 1240676701029190}
 --- !u!114 &114550548882098130
