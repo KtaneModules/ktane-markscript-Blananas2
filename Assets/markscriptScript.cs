@@ -258,7 +258,7 @@ public class markscriptScript : MonoBehaviour {
                     case 0: 
                         name = split[0].Substring(1, split[0].Length-1);
                         if (VarNames.Contains(name)) {
-                            DrawError("KNOWN √");
+                            DrawError("KNOWN √ " + name);
                             return;
                         }
                         value = split[1];
@@ -266,7 +266,7 @@ public class markscriptScript : MonoBehaviour {
                             numeric = Int32.Parse(value.Replace('♣','-'));
                         } else {
                             if (!VarNames.Contains(value)) {
-                                DrawError("UNKNOWN √");
+                                DrawError("UNKNOWN √ " + value);
                                 return;
                             } else {
                                 numeric = VarValues[VarNames.IndexOf(value)];
@@ -280,7 +280,7 @@ public class markscriptScript : MonoBehaviour {
                     case 1: 
                         name = split[0].Substring(0, split[0].Length-1);
                         if (!VarNames.Contains(name)) {
-                            DrawError("UNKNOWN √");
+                            DrawError("UNKNOWN √ " + name);
                             return;
                         }
                         value = split[1];
@@ -288,7 +288,7 @@ public class markscriptScript : MonoBehaviour {
                             numeric = Int32.Parse(value.Replace('♣','-'));
                         } else {
                             if (!VarNames.Contains(value)) {
-                                DrawError("UNKNOWN √");
+                                DrawError("UNKNOWN √ " + value);
                                 return;
                             } else {
                                 numeric = VarValues[VarNames.IndexOf(value)];
@@ -301,7 +301,7 @@ public class markscriptScript : MonoBehaviour {
                     case 2: 
                         name = split[0].Substring(1, split[0].Length-1);
                         if (!VarNames.Contains(name)) {
-                            DrawError("UNKNOWN √");
+                            DrawError("UNKNOWN √ " + name);
                             return;
                         }
                         if (split[1][0] == '♣') { //GREATER THAN
@@ -310,7 +310,7 @@ public class markscriptScript : MonoBehaviour {
                                 numeric = Int32.Parse(value.Replace('♣','-'));
                             } else {
                                 if (!VarNames.Contains(value)) {
-                                    DrawError("UNKNOWN √");
+                                    DrawError("UNKNOWN √ " + value);
                                     return;
                                 } else {
                                     numeric = VarValues[VarNames.IndexOf(value)];
@@ -330,7 +330,7 @@ public class markscriptScript : MonoBehaviour {
                                 numeric = Int32.Parse(value.Replace('♣','-'));
                             } else {
                                 if (!VarNames.Contains(value)) {
-                                    DrawError("UNKNOWN √");
+                                    DrawError("UNKNOWN √ " + value);
                                     return;
                                 } else {
                                     numeric = VarValues[VarNames.IndexOf(value)];
@@ -350,7 +350,7 @@ public class markscriptScript : MonoBehaviour {
                                 numeric = Int32.Parse(value.Replace('♣','-'));
                             } else {
                                 if (!VarNames.Contains(value)) {
-                                    DrawError("UNKNOWN √");
+                                    DrawError("UNKNOWN √ " + value);
                                     return;
                                 } else {
                                     numeric = VarValues[VarNames.IndexOf(value)];
@@ -368,7 +368,7 @@ public class markscriptScript : MonoBehaviour {
                     case 3: 
                         name = split[0].Substring(1, split[0].Length-1);
                         if (!ProgramComments.Contains(name)) {
-                            DrawError("UNKNOWN «");
+                            DrawError("UNKNOWN « " + name);
                             return;
                         }
                         CurrentLine = ProgramComments.IndexOf(name);
@@ -377,7 +377,7 @@ public class markscriptScript : MonoBehaviour {
                     case 4: 
                         name = split[0].Substring(1, split[0].Length-1);
                         if (!VarNames.Contains(name)) {
-                            DrawError("UNKNOWN √");
+                            DrawError("UNKNOWN √ " + value);
                             return;
                         }
                         value = split[1];
@@ -385,7 +385,7 @@ public class markscriptScript : MonoBehaviour {
                             numeric = Int32.Parse(value.Replace('♣','-'));
                         } else {
                             if (!VarNames.Contains(value)) {
-                                DrawError("UNKNOWN √");
+                                DrawError("UNKNOWN √ " + value);
                                 return;
                             } else {
                                 numeric = VarValues[VarNames.IndexOf(value)];
@@ -401,7 +401,7 @@ public class markscriptScript : MonoBehaviour {
                             numeric = Int32.Parse(value.Replace('♣','-'));
                         } else {
                             if (!VarNames.Contains(value)) {
-                                DrawError("UNKNOWN √");
+                                DrawError("UNKNOWN √ " + value);
                                 return;
                             } else {
                                 numeric = VarValues[VarNames.IndexOf(value)];
@@ -412,10 +412,10 @@ public class markscriptScript : MonoBehaviour {
                             ThatWasRight();
                         } else {
                             if (moduleSolved) {
-                                DrawError("UNAUTHORIZED DATA DETECTED, RETURNED " + numeric);
+                                DrawError("UNAUTHORIZED DATA DETECTED, ♫ " + numeric);
                                 return;
                             } else {
-                                DrawError("INCORRECT ♫");
+                                DrawError("INCORRECT ♫ " + numeric);
                                 return;
                             }
                         }
@@ -425,7 +425,7 @@ public class markscriptScript : MonoBehaviour {
         }
         //down here is default don't question it
         if (line != "") {
-            DrawError("WHAT");
+            DrawError("WHAT SYNTAX");
             return;
         }
         CurrentLine += 1;
