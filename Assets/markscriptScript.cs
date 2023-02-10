@@ -103,10 +103,10 @@ public class markscriptScript : MonoBehaviour {
             "Create a program which returns the larger value minus the smaller value when given numbers √D and √F.              | √D ?;√F ?      ",
             "Create a program which returns what you would need to add to √N to get 0.                                          | √N ?           ",
             "Create a program which returns the √Tth triangular number (sequence is 1, 3, 6, 10, 15, 21 etc.).                  | √T ?           ",
-            "Create a program which returns the √Fth Fibbonacci number (sequence is 1, 1, 2, 3, 5, 8, 13 etc.).                 | √F ?           ",
+            "Create a program which returns the √Fth Fibonacci number (sequence is 1, 1, 2, 3, 5, 8, 13 etc.).                  | √F ?           ",
             "Create a program which returns the √M modulo √D (the remainder after a division).                                  | √M ?;√D ?      ",
             "Create a program which returns the average between √A and √V (add them then divide by 2).                          | √A ?;√V ?      ",
-            "Create a program which returns 2 times √A minus √C.                                                                | √A ?;√C ?      ",
+            "Create a program which returns (2 times √A) minus √C.                                                              | √A ?;√C ?      ",
             "Create a program which returns √Z divided by 2 if √Z is even, and √Z times 3 plus 1 otherwise.                     | √Z ?           ",
             "Create a program which returns the digital root of √R (adding up all digits until you end up with just one digit). | √R ?           ",
             "Create a program which returns √S, times itself.                                                                   | √S ?           ",
@@ -574,7 +574,7 @@ public class markscriptScript : MonoBehaviour {
                     sp[s] = "<color=magenta>" + sp[s] + "</color>";
                     sp[s] = sp[s].Replace(".</color>", "</color>.");
                     sp[s] = sp[s].Replace(",</color>", "</color>,"); 
-                    sp[s] = sp[s].Replace(").</color>", "</color>)."); 
+                    sp[s] = sp[s].Replace(")</color>", "</color>)"); 
                     sp[s] = sp[s].Replace("th</color>", "</color>th"); 
                 }
             }
