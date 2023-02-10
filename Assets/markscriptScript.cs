@@ -131,7 +131,7 @@ public class markscriptScript : MonoBehaviour {
              case 5: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(5,13)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
              case 6: NumberOfStartLines = 2; unk.AddRange(new List<int> {UnityEngine.Random.Range(10,30), UnityEngine.Random.Range(3,9)}); CorrectAnswer = (unk[0] % unk[1]); break;
              case 7: NumberOfStartLines = 2; unk.Add(UnityEngine.Random.Range(5,13)); unk.Add(unk[0]+2*UnityEngine.Random.Range(2,7)); CorrectAnswer = (unk[0] + unk[1])/2; break;
-             case 8: NumberOfStartLines = 2; unk.Add(UnityEngine.Random.Range(5,13)); unk.Add(unk[0]+UnityEngine.Random.Range(2,5)); CorrectAnswer = unk[1] + (unk[1] - unk[0]); break;
+             case 8: NumberOfStartLines = 2; unk.Add(UnityEngine.Random.Range(5,13)); unk.Add(unk[0]+UnityEngine.Random.Range(2,5)); CorrectAnswer = 2*unk[0] - unk[1]; break;
              case 9: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(5,27)); CorrectAnswer = (unk[0]%2 == 0 ? unk[0]/2 : unk[0]*3+1); break;
             case 10: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(11,50)); CorrectAnswer = ((unk[0]-1)%9)+1; break;
             case 11: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(2,14)); CorrectAnswer = unk[0]*unk[0]; break;
@@ -576,6 +576,7 @@ public class markscriptScript : MonoBehaviour {
                     sp[s] = sp[s].Replace(",</color>", "</color>,"); 
                     sp[s] = sp[s].Replace(")</color>", "</color>)"); 
                     sp[s] = sp[s].Replace("th</color>", "</color>th"); 
+                    sp[s] = sp[s].Replace("(the</color>", "</color>(the"); 
                 }
             }
             st = "<i><color=teal>Mark</color><color=lightblue>script</color></i>\n\n<color=lime>" + sp.JoinString(" ") + "</color>";
