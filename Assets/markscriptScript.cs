@@ -426,6 +426,9 @@ public class markscriptScript : MonoBehaviour {
         //down here is default don't question it
         if (line != "") {
             DrawError("WHAT SYNTAX");
+            if (Program.Count == 1) { //Fixes bug which occurs if you have a syntax error on the first and only line.
+                CursorIndex = 0;
+            }
             return;
         }
         CurrentLine += 1;
