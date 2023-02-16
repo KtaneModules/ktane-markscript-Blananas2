@@ -12542,10 +12542,7 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1425165227526514}
-  m_Text: '<i><color=teal>Mark</color><color=lightblue>script</color></i>
-
-
-'
+  m_Text: <i><color=teal>Mark</color><color=lightblue>script</color></i>
   m_OffsetZ: 0
   m_CharacterSize: 1
   m_LineSpacing: 1

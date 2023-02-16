@@ -35,7 +35,7 @@ public class markscriptScript : MonoBehaviour {
     List<string> Program = new List<string> {""};
     int CursorIndex = 0;
     string Keys = "QWERTYUIOP789ASDFGHJKL▲456ZXCVBNM  ▼123«√◊∩₪☼♣♫  ←0☺ ";
-    string NShep = " ▲▼←▼QWERTYUIOPASDFGHJKLZXCVBNM12345678901234567890";
+    string NShep = " ▲▼←¶QWERTYUIOPASDFGHJKLZXCVBNM12345678901234567890";
     string NShift = " ▲▼←☺QWERTYUIOPASDFGHJKLZXCVBNM«√◊∩₪☼♣♫~~«√◊∩₪☼♣♫~~";
     bool TaskShown = false;
     bool ProgramRunning = false;
@@ -90,6 +90,14 @@ public class markscriptScript : MonoBehaviour {
                     if (NShift[j] == '~') { return; }
                     KeyPress(Keyboard[Keys.IndexOf(NShift[j])]);
                 } else {
+                    if (NShep[j] == '¶') { //Enter
+                        if (CursorIndex < NumberOfStartLines-1) { return; }
+                        CursorIndex += 1;
+                        Program.Insert(CursorIndex, "");
+                        if (CursorIndex == ScreenScroll+7) { ScreenScroll += 1; }
+                        DrawScreen(CursorIndex, ScreenScroll);
+                        return;
+                    };
                     KeyPress(Keyboard[Keys.IndexOf(NShep[j])]);
                 }
             }
@@ -106,16 +114,20 @@ public class markscriptScript : MonoBehaviour {
             "Create a program which returns the √Fth Fibonacci number (sequence is 1, 1, 2, 3, 5, 8, 13 etc.).                  | √F ?           ",
             "Create a program which returns the √M modulo √D (the remainder after a division).                                  | √M ?;√D ?      ",
             "Create a program which returns the average between √A and √V (add them then divide by 2).                          | √A ?;√V ?      ",
-            "Create a program which returns (2 times √A) minus √C.                                                              | √A ?;√C ?      ",
+            "Create a program which returns √A plus √A, minus √C.                                                               | √A ?;√C ?      ",
             "Create a program which returns √Z divided by 2 if √Z is even, and √Z times 3 plus 1 otherwise.                     | √Z ?           ",
             "Create a program which returns the digital root of √R (adding up all digits until you end up with just one digit). | √R ?           ",
             "Create a program which returns √S, times itself.                                                                   | √S ?           ",
             "Create a program which returns the value 1-4 missing when given numbers √X, √Y, and √Z.                            | √X ?;√Y ?;√Z ? ",
             "Create a program which returns the closest multiple of 9 to given number √I.                                       | √I ?           ",
             "Create a program which returns the middle value when given numbers √M, √I, and √D.                                 | √M ?;√I ?;√D ? ",
+            "By only adding 2s and 3s, get to a number √B from 0. Create a program which returns the maximum number of 3s.      | √B ?           ",
+            "Create a program which returns the greatest divisor of √V and √W.                                                  | √V ?;√W ?      ",
+            "Create a program which returns the number of 1s within number √O when converted to binary (base 2 instead of 10).  | √O ?           "
         };
+        int[] StartLines = { 2, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 1, 3, 1, 2 };
         PuzzleIndex = UnityEngine.Random.Range(0, Puzzles.Count());
-        Task = Puzzles[PuzzleIndex].Split('|')[0].Trim(); Program = Puzzles[PuzzleIndex].Split('|')[1].Trim().Split(';').ToList<string>();
+        NumberOfStartLines = StartLines[PuzzleIndex]; Task = Puzzles[PuzzleIndex].Split('|')[0].Trim(); Program = Puzzles[PuzzleIndex].Split('|')[1].Trim().Split(';').ToList<string>();
         Debug.LogFormat("[Markscript #{0}] Task: {1}", moduleId, Task);
     }
     
@@ -123,21 +135,24 @@ public class markscriptScript : MonoBehaviour {
         if (moduleSolved) { return; }
         List<int> unk = new List<int> {};
         switch (PuzzleIndex) {
-             case 0: NumberOfStartLines = 2; unk.AddRange(new List<int> {UnityEngine.Random.Range(3,8), UnityEngine.Random.Range(3,8)}); CorrectAnswer = unk[0] * unk[1]; break;
-             case 1: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(2,5)*5 + (UnityEngine.Random.Range(0,2) == 0 ? 0 : UnityEngine.Random.Range(1,5))); CorrectAnswer = (unk[0] % 5 == 0 ? 1 : 0); break;
-             case 2: NumberOfStartLines = 2; unk.AddRange(new List<int> {UnityEngine.Random.Range(6,13), UnityEngine.Random.Range(6,13)}); CorrectAnswer = Math.Abs(unk[0] - unk[1]); break;
-             case 3: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(-11,11)); CorrectAnswer = -unk[0]; break;
-             case 4: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(4,14)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
-             case 5: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(5,13)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
-             case 6: NumberOfStartLines = 2; unk.AddRange(new List<int> {UnityEngine.Random.Range(10,30), UnityEngine.Random.Range(3,9)}); CorrectAnswer = (unk[0] % unk[1]); break;
-             case 7: NumberOfStartLines = 2; unk.Add(UnityEngine.Random.Range(5,13)); unk.Add(unk[0]+2*UnityEngine.Random.Range(2,7)); CorrectAnswer = (unk[0] + unk[1])/2; break;
-             case 8: NumberOfStartLines = 2; unk.Add(UnityEngine.Random.Range(5,13)); unk.Add(unk[0]+UnityEngine.Random.Range(2,5)); CorrectAnswer = 2*unk[0] - unk[1]; break;
-             case 9: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(5,27)); CorrectAnswer = (unk[0]%2 == 0 ? unk[0]/2 : unk[0]*3+1); break;
-            case 10: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(11,50)); CorrectAnswer = ((unk[0]-1)%9)+1; break;
-            case 11: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(2,14)); CorrectAnswer = unk[0]*unk[0]; break;
-            case 12: NumberOfStartLines = 3; unk.AddRange(Enumerable.Range(1, 4)); unk.Shuffle(); CorrectAnswer = unk[3]; unk.Remove(unk[3]); break;
-            case 13: NumberOfStartLines = 1; unk.Add(UnityEngine.Random.Range(10,42)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
-            case 14: NumberOfStartLines = 3; unk.Add(UnityEngine.Random.Range(10,20)); unk.Add(unk[0] - UnityEngine.Random.Range(2,9)); unk.Add(unk[0] + UnityEngine.Random.Range(2,9)); unk.Shuffle(); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+             case 0: unk.AddRange(new List<int> {UnityEngine.Random.Range(3,8), UnityEngine.Random.Range(3,8)}); CorrectAnswer = unk[0] * unk[1]; break;
+             case 1: unk.Add(UnityEngine.Random.Range(2,5)*5 + (UnityEngine.Random.Range(0,2) == 0 ? 0 : UnityEngine.Random.Range(1,5))); CorrectAnswer = (unk[0] % 5 == 0 ? 1 : 0); break;
+             case 2: unk.AddRange(new List<int> {UnityEngine.Random.Range(6,13), UnityEngine.Random.Range(6,13)}); CorrectAnswer = Math.Abs(unk[0] - unk[1]); break;
+             case 3: unk.Add(UnityEngine.Random.Range(-11,11)); CorrectAnswer = -unk[0]; break;
+             case 4: unk.Add(UnityEngine.Random.Range(4,14)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+             case 5: unk.Add(UnityEngine.Random.Range(5,13)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+             case 6: unk.AddRange(new List<int> {UnityEngine.Random.Range(10,30), UnityEngine.Random.Range(3,9)}); CorrectAnswer = (unk[0] % unk[1]); break;
+             case 7: unk.Add(UnityEngine.Random.Range(5,13)); unk.Add(unk[0]+2*UnityEngine.Random.Range(2,7)); CorrectAnswer = (unk[0] + unk[1])/2; break;
+             case 8: unk.Add(UnityEngine.Random.Range(5,13)); unk.Add(unk[0]+UnityEngine.Random.Range(2,5)); CorrectAnswer = 2*unk[0] - unk[1]; break;
+             case 9: unk.Add(UnityEngine.Random.Range(5,27)); CorrectAnswer = (unk[0]%2 == 0 ? unk[0]/2 : unk[0]*3+1); break;
+            case 10: unk.Add(UnityEngine.Random.Range(11,30)); CorrectAnswer = ((unk[0]-1)%9)+1; break;
+            case 11: unk.Add(UnityEngine.Random.Range(2,14)); CorrectAnswer = unk[0]*unk[0]; break;
+            case 12: unk.AddRange(Enumerable.Range(1, 4)); unk.Shuffle(); CorrectAnswer = unk[3]; unk.Remove(unk[3]); break;
+            case 13: unk.Add(UnityEngine.Random.Range(10,42)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+            case 14: unk.Add(UnityEngine.Random.Range(10,20)); unk.Add(unk[0] - UnityEngine.Random.Range(2,9)); unk.Add(unk[0] + UnityEngine.Random.Range(2,9)); unk.Shuffle(); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+            case 15: unk.Add(UnityEngine.Random.Range(11,30)); CorrectAnswer = (unk[0]/3)-(unk[0]%3 == 1 ? 1 : 0); break;
+            case 16: unk.Add(UnityEngine.Random.Range(3,21)); unk.Add(UnityEngine.Random.Range(3,21)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+            case 17: unk.Add(UnityEngine.Random.Range(0,16)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
         }
         Debug.LogFormat("[Markscript #{0}] Given starting value(s): {1}", moduleId, unk.Join(", "));
         for (int u = 0; u < NumberOfStartLines; u++) {
@@ -151,6 +166,8 @@ public class markscriptScript : MonoBehaviour {
             case 5: int td = o[0]; int te = 1; int tf = 1; int tg = 0; int th = 2; while (th < td) { tg = te + tf; te = tf; tf = tg; th += 1; } return tf;
             case 13: int ti = o[0]; int tj = ti % 9; if (tj == 0) { return ti; } else { if (tj < 5) { while ((tj % 9) != 0) { tj -= 1; } } else { while ((tj % 9) != 0) { tj += 1; } } } return tj;
             case 14: List<int> tk = o; tk.Sort(); return tk[1];
+            case 16: int tl = 0; int tm = o[0]; int tn = o[1]; while (tn != 0) { tl = tn; tn = tm % tn; tm = tl; } return tm;
+            case 17: string to = Convert.ToString(o[0], 2); return to.Count(c => c == '1');
         }
         return -1;
     }
@@ -506,6 +523,14 @@ public class markscriptScript : MonoBehaviour {
                         }
                     break;
                     case "←":
+                        if (Program.Count-1 != CursorIndex) { // && DOWN THERE MAYBE???
+                            if (Program[CursorIndex+1].Length != 0) {
+                                Program.RemoveAt(CursorIndex);
+                                CursorIndex -= 1;
+                                DrawScreen(CursorIndex, ScreenScroll);
+                            }
+                            return; 
+                        }
                         if (Program[CursorIndex].Length == 0) { return; } //these have to be seperate to avoid an index out of range exception
                         if (TaskShown || Program[CursorIndex][Program[CursorIndex].Length - 1] == '?') { return; }
                         Program[CursorIndex] = Program[CursorIndex].Substring(0, Program[CursorIndex].Length - 1);
