@@ -125,7 +125,7 @@ public class markscriptScript : MonoBehaviour {
             "Create a program which returns the greatest divisor of √V and √W.                                                  | √V ?;√W ?      ",
             "Create a program which returns the number of 1s within number √O when converted to binary (base 2 instead of 10).  | √O ?           "
         };
-        int[] StartLines = { 2, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 1, 3, 1, 2 };
+        int[] StartLines = { 2, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 1, 3, 1, 2, 1 };
         PuzzleIndex = UnityEngine.Random.Range(0, Puzzles.Count());
         NumberOfStartLines = StartLines[PuzzleIndex]; Task = Puzzles[PuzzleIndex].Split('|')[0].Trim(); Program = Puzzles[PuzzleIndex].Split('|')[1].Trim().Split(';').ToList<string>();
         Debug.LogFormat("[Markscript #{0}] Task: {1}", moduleId, Task);
