@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using KModkit;
 
 public class markscriptScript : MonoBehaviour {
 
@@ -683,4 +682,102 @@ public class markscriptScript : MonoBehaviour {
         }
     }
 
+    //twitch plays
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} power [Presses the power button] | !{0} b l a n space 2 [Presses keys on the keyboard] | !{0} names [Outputs the names of characters that can't normally be typed]";
+    #pragma warning restore 414
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        if (command.EqualsIgnoreCase("names"))
+        {
+            yield return null;
+            yield return "sendtochat ☺ = smile | ← = backspace/back/bs (optionally you may use backspace#/back#/bs# to press this character # times) | ▲ = up | ▼ = down | « = arrows | √ = sqrt | ◊ = diamond | ∩ = arch | ₪ = shekel | ☼ = sun | ♣ = club | ♫ = note";
+            yield break;
+        }
+        string[] parameters = command.Split(' ');
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].Length == 1 && Keys.Contains(parameters[i].ToUpperInvariant()))
+                continue;
+            else if (parameters[i].ToLowerInvariant().EqualsAny("smile", "power", "space", "backspace", "back", "bs", "up", "down", "arrows", "sqrt", "diamond", "arch", "shekel", "sun", "club", "note"))
+                continue;
+            else if (Regex.IsMatch(parameters[i], @"^\s*(backspace|back|bs)([0123456789]+)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+                continue;
+            else
+            {
+                yield return "sendtochaterror!f What in the world is '" + parameters[i] + "' supposed to mean?";
+                yield break;
+            }
+        }
+        yield return null;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].Length == 1 && Keys.Contains(parameters[i].ToUpperInvariant()))
+            {
+                Keyboard[Keys.IndexOf(parameters[i].ToUpperInvariant())].OnInteract();
+                yield return new WaitForSeconds(.1f);
+            }
+            else if (Regex.IsMatch(parameters[i], @"^\s*(backspace|back|bs)([0123456789]+)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+            {
+                string num = parameters[i].ToLowerInvariant().Replace("backspace", "").Replace("back", "").Replace("bs", "");
+                int parsedNum = int.Parse(num);
+                for (int j = 0; j < parsedNum; j++)
+                {
+                    Keyboard[49].OnInteract();
+                    yield return new WaitForSeconds(.1f);
+                }
+            }
+            else
+            {
+                switch (parameters[i].ToLowerInvariant())
+                {
+                    case "smile":
+                        Keyboard[51].OnInteract();
+                        break;
+                    case "power":
+                        Power.OnInteract();
+                        break;
+                    case "space":
+                        Keyboard[52].OnInteract();
+                        break;
+                    case "backspace":
+                    case "back":
+                    case "bs":
+                        Keyboard[49].OnInteract();
+                        break;
+                    case "up":
+                        Keyboard[22].OnInteract();
+                        break;
+                    case "down":
+                        Keyboard[35].OnInteract();
+                        break;
+                    case "arrows":
+                        Keyboard[39].OnInteract();
+                        break;
+                    case "sqrt":
+                        Keyboard[40].OnInteract();
+                        break;
+                    case "diamond":
+                        Keyboard[41].OnInteract();
+                        break;
+                    case "arch":
+                        Keyboard[42].OnInteract();
+                        break;
+                    case "shekel":
+                        Keyboard[43].OnInteract();
+                        break;
+                    case "sun":
+                        Keyboard[44].OnInteract();
+                        break;
+                    case "club":
+                        Keyboard[45].OnInteract();
+                        break;
+                    default:
+                        Keyboard[46].OnInteract();
+                        break;
+                }
+                yield return new WaitForSeconds(.1f);
+            }
+        }
+    }
 }
