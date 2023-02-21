@@ -163,7 +163,7 @@ public class markscriptScript : MonoBehaviour {
         switch (z) {
             case 4: int ta = o[0]; int tb = 0; for (int tc = ta; tc >= 0; tc--) { tb += tc; } return tb;
             case 5: int td = o[0]; int te = 1; int tf = 1; int tg = 0; int th = 2; while (th < td) { tg = te + tf; te = tf; tf = tg; th += 1; } return tf;
-            case 13: int ti = o[0]; int tj = ti % 9; if (tj == 0) { return ti; } else { if (tj < 5) { while ((tj % 9) != 0) { tj -= 1; } } else { while ((tj % 9) != 0) { tj += 1; } } } return tj;
+            case 13: int ti = o[0]; int tj = ti % 9; if (tj == 0) { return ti; } else { if (tj < 5) { while ((tj % 9) != 0) { tj += 1; } } else { while ((tj % 9) != 0) { tj -= 1; } } } return tj;
             case 14: List<int> tk = o; tk.Sort(); return tk[1];
             case 16: int tl = 0; int tm = o[0]; int tn = o[1]; while (tn != 0) { tl = tn; tn = tm % tn; tm = tl; } return tm;
             case 17: string to = Convert.ToString(o[0], 2); return to.Count(c => c == '1');
