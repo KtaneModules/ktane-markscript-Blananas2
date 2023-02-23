@@ -163,7 +163,7 @@ public class markscriptScript : MonoBehaviour {
         switch (z) {
             case 4: int ta = o[0]; int tb = 0; for (int tc = ta; tc >= 0; tc--) { tb += tc; } return tb;
             case 5: int td = o[0]; int te = 1; int tf = 1; int tg = 0; int th = 2; while (th < td) { tg = te + tf; te = tf; tf = tg; th += 1; } return tf;
-            case 13: int ti = o[0]; int tj = ti % 9; if (tj == 0) { return ti; } else { if (tj < 5) { while ((tj % 9) != 0) { tj += 1; } } else { while ((tj % 9) != 0) { tj -= 1; } } } return tj;
+            case 13: int ti = o[0]; int tj = ti % 9; if (tj == 0) { return ti; } else { if (tj < 5) { while ((ti % 9) != 0) { ti -= 1; } } else { while ((ti % 9) != 0) { ti += 1; } } } return ti;
             case 14: List<int> tk = o; tk.Sort(); return tk[1];
             case 16: int tl = 0; int tm = o[0]; int tn = o[1]; while (tn != 0) { tl = tn; tn = tm % tn; tm = tl; } return tm;
             case 17: string to = Convert.ToString(o[0], 2); return to.Count(c => c == '1');
@@ -522,12 +522,12 @@ public class markscriptScript : MonoBehaviour {
                         }
                     break;
                     case "←":
-                        if (Program.Count-1 != CursorIndex) { // && DOWN THERE MAYBE???
-                            if (Program[CursorIndex+1].Length != 0) {
-                                Program.RemoveAt(CursorIndex);
-                                CursorIndex -= 1;
-                                DrawScreen(CursorIndex, ScreenScroll);
-                            }
+                        if (Program[CursorIndex].Length == 0) { // && DOWN THERE MAYBE???
+                            if (CursorIndex == 0) { return; }
+                            Program.RemoveAt(CursorIndex);
+                            CursorIndex -= 1;
+                            if (ScreenScroll > CursorIndex) { ScreenScroll -= 1; }
+                            DrawScreen(CursorIndex, ScreenScroll);
                             return; 
                         }
                         if (Program[CursorIndex].Length == 0) { return; } //these have to be seperate to avoid an index out of range exception
@@ -682,7 +682,7 @@ public class markscriptScript : MonoBehaviour {
         }
     }
 
-    //twitch plays
+    //toilet paper
     #pragma warning disable 414
     private readonly string TwitchHelpMessage = @"!{0} power [Presses the power button] | !{0} b l a n space 2 [Presses keys on the keyboard] | !{0} names [Outputs the names of characters that can't normally be typed]";
     #pragma warning restore 414
