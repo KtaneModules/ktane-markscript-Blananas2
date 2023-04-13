@@ -710,6 +710,7 @@ public class markscriptScript : MonoBehaviour {
             }
         }
         yield return null;
+        yield return "solve";
         for (int i = 0; i < parameters.Length; i++)
         {
             if (parameters[i].Length == 1 && Keys.Contains(parameters[i].ToUpperInvariant()))
