@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using Rnd = UnityEngine.Random;
 
 public class markscriptScript : MonoBehaviour {
 
@@ -47,6 +48,7 @@ public class markscriptScript : MonoBehaviour {
     string DebugLog = "";
     int[] RetroNumbers = { 2, 2, 2, 2, 2, 2, 2 };
     string[] RetroLines = { "", "", "", "", "", "", "" };
+    string Unknowns = "";
 
     int CurrentLine = 0;
     List<string> ProgramComments = new List<string> {};
@@ -106,26 +108,27 @@ public class markscriptScript : MonoBehaviour {
     void GeneratePuzzle () {
         string[] Puzzles = {
             "Create a program which returns √P times √Q.                                                                        | √P ?;√Q ?      ",
-            "Create a program which returns 1 if √X is divisible by 5, and 0 otherwise.                                         | √X ?           ",
-            "Create a program which returns the larger value minus the smaller value when given numbers √D and √F.              | √D ?;√F ?      ",
-            "Create a program which returns what you would need to add to √N to get 0.                                          | √N ?           ",
-            "Create a program which returns the √Tth triangular number (sequence is 1, 3, 6, 10, 15, 21 etc.).                  | √T ?           ",
-            "Create a program which returns the √Fth Fibonacci number (sequence is 1, 1, 2, 3, 5, 8, 13 etc.).                  | √F ?           ",
-            "Create a program which returns the √M modulo √D (the remainder after a division).                                  | √M ?;√D ?      ",
-            "Create a program which returns the average between √A and √V (add them then divide by 2).                          | √A ?;√V ?      ",
-            "Create a program which returns √A plus √A, minus √C.                                                               | √A ?;√C ?      ",
-            "Create a program which returns √Z divided by 2 if √Z is even, and √Z times 3 plus 1 otherwise.                     | √Z ?           ",
-            "Create a program which returns the digital root of √R (adding up all digits until you end up with just one digit). | √R ?           ",
-            "Create a program which returns √S, times itself.                                                                   | √S ?           ",
-            "Create a program which returns the value 1-4 missing when given numbers √X, √Y, and √Z.                            | √X ?;√Y ?;√Z ? ",
-            "Create a program which returns the closest multiple of 9 to given number √I.                                       | √I ?           ",
-            "Create a program which returns the middle value when given numbers √M, √I, and √D.                                 | √M ?;√I ?;√D ? ",
-            "By only adding 2s and 3s, get to a number √B from 0. Create a program which returns the maximum number of 3s.      | √B ?           ",
-            "Create a program which returns the greatest divisor of √V and √W.                                                  | √V ?;√W ?      ",
-            "Create a program which returns the number of 1s within number √O when converted to binary (base 2 instead of 10).  | √O ?           "
+            "Create a program which returns 1 if √Q is divisible by 5, and 0 otherwise.                                         | √Q ?           ",
+            "Create a program which returns the larger value minus the smaller value when given numbers √P and √Q.              | √P ?;√Q ?      ",
+            "Create a program which returns what you would need to add to √Q to get 0.                                          | √Q ?           ",
+            "Create a program which returns the √Qth triangular number (sequence is 1, 3, 6, 10, 15, 21 etc.).                  | √Q ?           ",
+            "Create a program which returns the √Qth Fibonacci number (sequence is 1, 1, 2, 3, 5, 8, 13 etc.).                  | √Q ?           ",
+            "Create a program which returns √P modulo √Q (the remainder after a division).                                      | √P ?;√Q ?      ",
+            "Create a program which returns the average between √P and √Q (add them then divide by 2).                          | √P ?;√Q ?      ",
+            "Create a program which returns √P times 2, minus √Q.                                                               | √P ?;√Q ?      ",
+            "Create a program which returns √Q divided by 2 if √Q is even, and √Q times 3 plus 1 otherwise.                     | √Q ?           ",
+            "Create a program which returns the digital root of √Q (adding up all digits until you end up with just one digit). | √Q ?           ",
+            "Create a program which returns √Q, times itself.                                                                   | √Q ?           ",
+            "Create a program which returns the value 1-4 missing when given numbers √P, √Q, and √R.                            | √P ?;√Q ?;√R ? ",
+            "Create a program which returns the closest multiple of 9 to given number √Q.                                       | √Q ?           ",
+            "Create a program which returns the middle value when given numbers √P, √Q, and √R.                                 | √P ?;√Q ?;√R ? ",
+            "Create a program which returns the greatest divisor of √P and √Q.                                                  | √P ?;√Q ?      ",
+            "Create a program which returns the number of 1s within number √Q when converted to binary (base 2 instead of 10).  | √Q ?           "
+          //"By only adding 2s and 3s, get to a number √Q from 0. Create a program which returns the maximum number of 3s.      | √Q ?           ",
         };
-        int[] StartLines = { 2, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 1, 3, 1, 2, 1 };
-        PuzzleIndex = UnityEngine.Random.Range(0, Puzzles.Count());
+        int[] StartLines = { 2, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 1, 3, 2, 1 };
+        PuzzleIndex = Rnd.Range(0, Puzzles.Count());
+        PuzzleIndex = 3;
         NumberOfStartLines = StartLines[PuzzleIndex]; Task = Puzzles[PuzzleIndex].Split('|')[0].Trim(); Program = Puzzles[PuzzleIndex].Split('|')[1].Trim().Split(';').ToList<string>();
         Debug.LogFormat("[Markscript #{0}] Task: {1}", moduleId, Task);
     }
@@ -134,28 +137,29 @@ public class markscriptScript : MonoBehaviour {
         if (moduleSolved) { return; }
         List<int> unk = new List<int> {};
         switch (PuzzleIndex) {
-             case 0: unk.AddRange(new List<int> {UnityEngine.Random.Range(3,8), UnityEngine.Random.Range(3,8)}); CorrectAnswer = unk[0] * unk[1]; break;
-             case 1: unk.Add(UnityEngine.Random.Range(2,5)*5 + (UnityEngine.Random.Range(0,2) == 0 ? 0 : UnityEngine.Random.Range(1,5))); CorrectAnswer = (unk[0] % 5 == 0 ? 1 : 0); break;
-             case 2: unk.AddRange(new List<int> {UnityEngine.Random.Range(6,13), UnityEngine.Random.Range(6,13)}); CorrectAnswer = Math.Abs(unk[0] - unk[1]); break;
-             case 3: unk.Add(UnityEngine.Random.Range(-11,11)); CorrectAnswer = -unk[0]; break;
-             case 4: unk.Add(UnityEngine.Random.Range(4,14)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
-             case 5: unk.Add(UnityEngine.Random.Range(5,13)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
-             case 6: unk.AddRange(new List<int> {UnityEngine.Random.Range(10,30), UnityEngine.Random.Range(3,9)}); CorrectAnswer = (unk[0] % unk[1]); break;
-             case 7: unk.Add(UnityEngine.Random.Range(5,13)); unk.Add(unk[0]+2*UnityEngine.Random.Range(2,7)); CorrectAnswer = (unk[0] + unk[1])/2; break;
-             case 8: unk.Add(UnityEngine.Random.Range(5,13)); unk.Add(unk[0]+UnityEngine.Random.Range(2,5)); CorrectAnswer = 2*unk[0] - unk[1]; break;
-             case 9: unk.Add(UnityEngine.Random.Range(5,27)); CorrectAnswer = (unk[0]%2 == 0 ? unk[0]/2 : unk[0]*3+1); break;
-            case 10: unk.Add(UnityEngine.Random.Range(11,30)); CorrectAnswer = ((unk[0]-1)%9)+1; break;
-            case 11: unk.Add(UnityEngine.Random.Range(2,14)); CorrectAnswer = unk[0]*unk[0]; break;
+             case 0: unk.AddRange(new List<int> {Rnd.Range(3,8), Rnd.Range(3,8)}); CorrectAnswer = unk[0] * unk[1]; break;
+             case 1: unk.Add(Rnd.Range(2,5)*5 + (Rnd.Range(0,2) == 0 ? 0 : Rnd.Range(1,5))); CorrectAnswer = (unk[0] % 5 == 0 ? 1 : 0); break;
+             case 2: unk.AddRange(new List<int> {Rnd.Range(6,13), Rnd.Range(6,13)}); CorrectAnswer = Math.Abs(unk[0] - unk[1]); break;
+             case 3: unk.Add(Rnd.Range(-11,11)); CorrectAnswer = -unk[0]; break;
+             case 4: unk.Add(Rnd.Range(4,14)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+             case 5: unk.Add(Rnd.Range(5,13)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+             case 6: unk.AddRange(new List<int> {Rnd.Range(10,30), Rnd.Range(3,9)}); CorrectAnswer = (unk[0] % unk[1]); break;
+             case 7: unk.Add(Rnd.Range(5,13)); unk.Add(unk[0]+2*Rnd.Range(2,7)); CorrectAnswer = (unk[0] + unk[1])/2; break;
+             case 8: unk.Add(Rnd.Range(5,13)); unk.Add(unk[0]+Rnd.Range(2,5)); CorrectAnswer = 2*unk[0] - unk[1]; break;
+             case 9: unk.Add(Rnd.Range(5,27)); CorrectAnswer = (unk[0]%2 == 0 ? unk[0]/2 : unk[0]*3+1); break;
+            case 10: unk.Add(Rnd.Range(11,30)); CorrectAnswer = ((unk[0]-1)%9)+1; break;
+            case 11: unk.Add(Rnd.Range(2,14)); CorrectAnswer = unk[0]*unk[0]; break;
             case 12: unk.AddRange(Enumerable.Range(1, 4)); unk.Shuffle(); CorrectAnswer = unk[3]; unk.Remove(unk[3]); break;
-            case 13: unk.Add(UnityEngine.Random.Range(10,42)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
-            case 14: unk.Add(UnityEngine.Random.Range(10,20)); unk.Add(unk[0] - UnityEngine.Random.Range(2,9)); unk.Add(unk[0] + UnityEngine.Random.Range(2,9)); unk.Shuffle(); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
-            case 15: unk.Add(UnityEngine.Random.Range(11,30)); CorrectAnswer = (unk[0]/3)-(unk[0]%3 == 1 ? 1 : 0); break;
-            case 16: unk.Add(UnityEngine.Random.Range(3,21)); unk.Add(UnityEngine.Random.Range(3,21)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
-            case 17: unk.Add(UnityEngine.Random.Range(0,16)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+            case 13: unk.Add(Rnd.Range(10,42)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+            case 14: unk.Add(Rnd.Range(10,20)); unk.Add(unk[0] - Rnd.Range(2,9)); unk.Add(unk[0] + Rnd.Range(2,9)); unk.Shuffle(); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+            case 15: unk.Add(Rnd.Range(3,21)); unk.Add(Rnd.Range(3,21)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+            case 16: unk.Add(Rnd.Range(0,16)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+          //case 15: unk.Add(Rnd.Range(11,30)); CorrectAnswer = (unk[0]/3)-(unk[0]%3 == 1 ? 1 : 0); break;
         }
-        Debug.LogFormat("[Markscript #{0}] Given starting value(s): {1}", moduleId, unk.Join(", "));
+        Unknowns = unk.Join(", ").Replace("-", "♣");
+        Debug.LogFormat("[Markscript #{0}] Given starting value(s): {1}", moduleId, Unknowns);
         for (int u = 0; u < NumberOfStartLines; u++) {
-            Program[u] = Program[u].Replace("?", unk[u].ToString().Replace("-", "♣"));
+            Program[u] = Program[u].Replace("?", Clubify(unk[u]));
         }
     }
 
@@ -165,8 +169,8 @@ public class markscriptScript : MonoBehaviour {
             case 5: int td = o[0]; int te = 1; int tf = 1; int tg = 0; int th = 2; while (th < td) { tg = te + tf; te = tf; tf = tg; th += 1; } return tf;
             case 13: int ti = o[0]; int tj = ti % 9; if (tj == 0) { return ti; } else { if (tj < 5) { while ((ti % 9) != 0) { ti -= 1; } } else { while ((ti % 9) != 0) { ti += 1; } } } return ti;
             case 14: List<int> tk = o.ToList(); tk.Sort(); return tk[1];
-            case 16: int tl = 0; int tm = o[0]; int tn = o[1]; while (tn != 0) { tl = tn; tn = tm % tn; tm = tl; } return tm;
-            case 17: string to = Convert.ToString(o[0], 2); return to.Count(c => c == '1');
+            case 15: int tl = 0; int tm = o[0]; int tn = o[1]; while (tn != 0) { tl = tn; tn = tm % tn; tm = tl; } return tm;
+            case 16: string to = Convert.ToString(o[0], 2); return to.Count(c => c == '1');
         }
         return -1;
     }
@@ -279,7 +283,7 @@ public class markscriptScript : MonoBehaviour {
                         }
                         value = split[1];
                         if (Regex.IsMatch(value, @"^♣?[0-9]+$")) {
-                            numeric = Int32.Parse(value.Replace('♣','-'));
+                            numeric = Int32.Parse(Declubify(value));
                         } else {
                             if (!VarNames.Contains(value)) {
                                 DrawError("UNKNOWN √ " + value);
@@ -291,7 +295,7 @@ public class markscriptScript : MonoBehaviour {
                         VarNames.Add(name);
                         VarValues.Add(numeric);
                         CurrentLine += 1;
-                        DebugLog += ("√ Made " + name + " which equals " + numeric + ";");
+                        DebugLog += ("√ Made " + name + " which equals " + Clubify(numeric) + ";");
                         return;
                     case 1: 
                         name = split[0].Substring(0, split[0].Length-1);
@@ -301,7 +305,7 @@ public class markscriptScript : MonoBehaviour {
                         }
                         value = split[1];
                         if (Regex.IsMatch(value, @"^♣?[0-9]+$")) {
-                            numeric = Int32.Parse(value.Replace('♣','-'));
+                            numeric = Int32.Parse(Declubify(value));
                         } else {
                             if (!VarNames.Contains(value)) {
                                 DrawError("UNKNOWN √ " + value);
@@ -312,7 +316,7 @@ public class markscriptScript : MonoBehaviour {
                         }
                         VarValues[VarNames.IndexOf(name)] = numeric;
                         CurrentLine += 1;
-                        DebugLog += ("√ " + name + " now equals " + numeric + ";");
+                        DebugLog += ("√ " + name + " now equals " + Clubify(numeric) + ";");
                         return;
                     case 2: 
                         name = split[0].Substring(1, split[0].Length-1);
@@ -323,7 +327,7 @@ public class markscriptScript : MonoBehaviour {
                         if (split[1][0] == '♣') { //GREATER THAN
                             value = split[1].Substring(2, split[1].Length-2);
                             if (Regex.IsMatch(value, @"^♣?[0-9]+$")) {
-                                numeric = Int32.Parse(value.Replace('♣','-'));
+                                numeric = Int32.Parse(Declubify(value));
                             } else {
                                 if (!VarNames.Contains(value)) {
                                     DrawError("UNKNOWN √ " + value);
@@ -334,16 +338,16 @@ public class markscriptScript : MonoBehaviour {
                             }
                             if (VarValues[VarNames.IndexOf(name)] > numeric) {
                                 CurrentLine += 2;
-                                DebugLog += ("◊♣∩ " + name + " is greater than " + numeric + ", skipping a line;");
+                                DebugLog += ("◊♣∩ " + name + " is greater than " + Clubify(numeric) + ", skipping a line;");
                             } else {
                                 CurrentLine += 1;
-                                DebugLog += ("◊♣∩ " + name + " is not greater than " + numeric + ";");
+                                DebugLog += ("◊♣∩ " + name + " is not greater than " + Clubify(numeric) + ";");
                             }
                             return;
                         } else if (split[1][0] == '∩' && split[1][1] == '∩') { //EQUAL TO
                             value = split[1].Substring(2, split[1].Length-2);
                             if (Regex.IsMatch(value, @"^♣?[0-9]+$")) {
-                                numeric = Int32.Parse(value.Replace('♣','-'));
+                                numeric = Int32.Parse(Declubify(value));
                             } else {
                                 if (!VarNames.Contains(value)) {
                                     DrawError("UNKNOWN √ " + value);
@@ -354,16 +358,16 @@ public class markscriptScript : MonoBehaviour {
                             }
                             if (VarValues[VarNames.IndexOf(name)] == numeric) {
                                 CurrentLine += 2;
-                                DebugLog += ("◊∩∩ " + name + " is equal to " + numeric + ", skipping a line;");
+                                DebugLog += ("◊∩∩ " + name + " is equal to " + Clubify(numeric) + ", skipping a line;");
                             } else {
                                 CurrentLine += 1;
-                                DebugLog += ("◊∩∩ " + name + " is not equal to " + numeric + ";");
+                                DebugLog += ("◊∩∩ " + name + " is not equal to " + Clubify(numeric) + ";");
                             }
                             return;
                         } else { //LESS THAN
                             value = split[1].Substring(1, split[1].Length-1);
                             if (Regex.IsMatch(value, @"^♣?[0-9]+$")) {
-                                numeric = Int32.Parse(value.Replace('♣','-'));
+                                numeric = Int32.Parse(Declubify(value));
                             } else {
                                 if (!VarNames.Contains(value)) {
                                     DrawError("UNKNOWN √ " + value);
@@ -374,10 +378,10 @@ public class markscriptScript : MonoBehaviour {
                             }
                             if (VarValues[VarNames.IndexOf(name)] < numeric) {
                                 CurrentLine += 2;
-                                DebugLog += ("◊∩ " + name + " is less than " + numeric + ", skipping a line;");
+                                DebugLog += ("◊∩ " + name + " is less than " + Clubify(numeric) + ", skipping a line;");
                             } else {
                                 CurrentLine += 1;
-                                DebugLog += ("◊∩ " + name + " is not less than " + numeric + ";");
+                                DebugLog += ("◊∩ " + name + " is not less than " + Clubify(numeric) + ";");
                             }
                         }
                         return;
@@ -398,7 +402,7 @@ public class markscriptScript : MonoBehaviour {
                         }
                         value = split[1];
                         if (Regex.IsMatch(value, @"^♣?[0-9]+$")) {
-                            numeric = Int32.Parse(value.Replace('♣','-'));
+                            numeric = Int32.Parse(Declubify(value));
                         } else {
                             if (!VarNames.Contains(value)) {
                                 DrawError("UNKNOWN √ " + value);
@@ -409,12 +413,12 @@ public class markscriptScript : MonoBehaviour {
                         }
                         VarValues[VarNames.IndexOf(name)] += numeric;
                         CurrentLine += 1;
-                        DebugLog += ("☼ " + name + " now equals " + VarValues[VarNames.IndexOf(name)] + ";");
+                        DebugLog += ("☼ " + name + " now equals " + Clubify(VarValues[VarNames.IndexOf(name)]) + ";");
                         return;
                     case 5:
                         value = split[0].Substring(1, split[0].Length-1);
                         if (Regex.IsMatch(value, @"^♣?[0-9]+$")) {
-                            numeric = Int32.Parse(value.Replace('♣','-'));
+                            numeric = Int32.Parse(Declubify(value));
                         } else {
                             if (!VarNames.Contains(value)) {
                                 DrawError("UNKNOWN √ " + value);
@@ -423,15 +427,15 @@ public class markscriptScript : MonoBehaviour {
                                 numeric = VarValues[VarNames.IndexOf(value)];
                             }
                         }
-                        DebugLog += ("♫ " + numeric + " returned");
+                        DebugLog += ("♫ " + Clubify(numeric) + " returned");
                         if (numeric == CorrectAnswer) {
                             ThatWasRight();
                         } else {
                             if (moduleSolved) {
-                                DrawError("UNAUTHORIZED DATA DETECTED, ♫ " + numeric);
+                                DrawError("UNAUTHORIZED DATA DETECTED, ♫ " + Clubify(numeric));
                                 return;
                             } else {
-                                DrawError("INCORRECT ♫ " + numeric);
+                                DrawError("INCORRECT ♫ " + Clubify(numeric) + " FOR INPUTS " + Unknowns);
                                 return;
                             }
                         }
@@ -639,6 +643,14 @@ public class markscriptScript : MonoBehaviour {
             DrawScreen(CursorIndex, ScreenScroll);
             yield return null;
         }
+    }
+
+    private string Clubify(int n) {
+        return n.ToString().Replace('-', '♣');
+    }
+
+    private string Declubify(string s) {
+        return s.Replace('♣', '-');
     }
 
     /// WORDWRAP CODE, Credit goes to ICR and Rapptz on StackExchange
