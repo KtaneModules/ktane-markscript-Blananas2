@@ -123,12 +123,15 @@ public class markscriptScript : MonoBehaviour {
             "Create a program which returns the closest multiple of 9 to given number √Q.                                       | √Q ?           ",
             "Create a program which returns the middle value when given numbers √P, √Q, and √R.                                 | √P ?;√Q ?;√R ? ",
             "Create a program which returns the greatest divisor of √P and √Q.                                                  | √P ?;√Q ?      ",
-            "Create a program which returns the number of 1s within number √Q when converted to binary (base 2 instead of 10).  | √Q ?           "
-          //"By only adding 2s and 3s, get to a number √Q from 0. Create a program which returns the maximum number of 3s.      | √Q ?           ",
+            "Create a program which returns the number of 1s within number √Q when converted to binary (base 2 instead of 10).  | √Q ?           ",
+            "Create a program which returns the sum of the first √Q positive even numbers.                                      | √Q ?           ",
+            "Create a program which returns the area of a triangle with base √P and height √Q.                                  | √P ?;√Q ?      ",
+            "Create a program which returns the sum of all odd numbers between √P and √Q (inclusive).                           | √P ?;√Q ?      ",
+            "Create a program which returns the sum of the highest √Q odd numbers less than 100.                                | √Q ?           "
+          //"By only adding 2s and 3s, get to a number √Q from 0. Create a program which returns the maximum number of 3s.      | √Q ?           " //this fella was removed due to it being too complex,
         };
-        int[] StartLines = { 2, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 1, 3, 2, 1 };
+        int[] StartLines = { 2, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 1, 3, 2, 1, 1, 2, 2, 1 };
         PuzzleIndex = Rnd.Range(0, Puzzles.Count());
-        PuzzleIndex = 3;
         NumberOfStartLines = StartLines[PuzzleIndex]; Task = Puzzles[PuzzleIndex].Split('|')[0].Trim(); Program = Puzzles[PuzzleIndex].Split('|')[1].Trim().Split(';').ToList<string>();
         Debug.LogFormat("[Markscript #{0}] Task: {1}", moduleId, Task);
     }
@@ -154,7 +157,11 @@ public class markscriptScript : MonoBehaviour {
             case 14: unk.Add(Rnd.Range(10,20)); unk.Add(unk[0] - Rnd.Range(2,9)); unk.Add(unk[0] + Rnd.Range(2,9)); unk.Shuffle(); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
             case 15: unk.Add(Rnd.Range(3,21)); unk.Add(Rnd.Range(3,21)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
             case 16: unk.Add(Rnd.Range(0,16)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
-          //case 15: unk.Add(Rnd.Range(11,30)); CorrectAnswer = (unk[0]/3)-(unk[0]%3 == 1 ? 1 : 0); break;
+            case 17: unk.Add(Rnd.Range(3,10)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+            case 18: unk.Add(Rnd.Range(3,12)); unk.Add(2*(Rnd.Range(1,6)) + (unk[0]%2 == 0 ? 1 : 0)); CorrectAnswer = (unk[0]*unk[1])/2; break;
+            case 19: unk.Add(Rnd.Range(3,10)*2+1); unk.Add(Rnd.Range(13,20)*2+1); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+            case 20: unk.Add(Rnd.Range(1,11)); CorrectAnswer = ComplicatedScenario(PuzzleIndex, unk); break;
+          //case -1: unk.Add(Rnd.Range(11,30)); CorrectAnswer = (unk[0]/3)-(unk[0]%3 == 1 ? 1 : 0); break;
         }
         Unknowns = unk.Join(", ").Replace("-", "♣");
         Debug.LogFormat("[Markscript #{0}] Given starting value(s): {1}", moduleId, Unknowns);
@@ -171,6 +178,9 @@ public class markscriptScript : MonoBehaviour {
             case 14: List<int> tk = o.ToList(); tk.Sort(); return tk[1];
             case 15: int tl = 0; int tm = o[0]; int tn = o[1]; while (tn != 0) { tl = tn; tn = tm % tn; tm = tl; } return tm;
             case 16: string to = Convert.ToString(o[0], 2); return to.Count(c => c == '1');
+            case 17: int tp = o[0]; int tq = 0; for (int tr = tp; tr >= 0; tr--) { tq += tr; } return 2*tq;
+            case 19: int ts = o[0]; int tt = o[1]; int tu = 0; while (ts != tt) { tu += ts; ts += 2; } tu += tt; return tu;
+            case 20: int tv = o[0]; int tw = 101; int tx = 0; while (tv != 0) { tw -= 2; tx += tw; tv -= 1; } return tx;
         }
         return -1;
     }
